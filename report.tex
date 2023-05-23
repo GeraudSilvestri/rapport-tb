@@ -1,7 +1,6 @@
 \documentclass[
-    iai, % Saisir le nom de l'institut rattaché
-    eai, % Saisir le nom de l'orientation
-    confidential, % Décommentez si le travail est confidentiel
+    reds, % Saisir le nom de l'institut rattaché
+    il, % Saisir le nom de l'orientation
 ]{heig-tb}
 
 \usepackage[nooldvoltagedirection,european,americaninductors]{circuitikz}
@@ -55,9 +54,13 @@
 
 %% Contenu
 \mainmatter
+
 \chapter{Introduction}
 \input{introduction.tex}
-\input{examples.tex}
+\input{cahier_des_charges.tex}
+
+\chapter{Choix des technologies}
+\input {choix_technologies.tex}
 
 \chapter{Conclusion}
 \input{conclusion.tex}

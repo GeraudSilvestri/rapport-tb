@@ -1,0 +1,82 @@
+\section{Application}
+
+L'application est séparée en trois parties majeures qui seront détaillées ci-dessous.
+
+\subsection{Données}
+Le format de données attendu par l'application est un fichier JSON contenant respectant la structure suivante :
+
+{
+"problem_name":"test1",
+
+"groupes":[
+{"groupe_nom":"MI1-1", "effectif":14, "cours_suivis":[["CAO1-1-A","CAO1-1-B"],["Info1Mi-1-A"]] },
+{"groupe_nom":"MI1-2", "effectif":14, "cours_suivis":[["CAO1-1-A","CAO1-1-B"],["Info1Mi-1-A"]]}
+],
+
+"cours":[
+{"cours_nom":"CAO1-1-A", "lessons" : [
+{"lesson_nom":"CAO1-1-A-P1", "duree":4, "profs":["JCG"] ,"salles_possibles":["H06c"] }
+]},
+{"cours_nom":"CAO1-1-B", "lessons" : [
+{"lesson_nom":"CAO1-1-B-P1", "duree":4, "profs":["RRH"] ,"salles_possibles":["H06c"] }
+]},
+{"cours_nom":"Info1Mi-1-A", "lessons" : [
+{"lesson_nom":"Info1Mi-1-A-C1", "duree":2, "profs":["GYM","TMZ"] ,"salles_possibles":["G01","G02","G03","G04","G05","G06a","G06b","G06d","G07","H01","H02","H03","H04","H05","H06b","H06c","H06e","H07"] },
+{"lesson_nom":"Info1Mi-1-A-C2", "duree":2, "profs":["GYM","TMZ"] ,"salles_possibles":["G01","G02","G03","G04","G05","G06a","G06b","G06d","G07","H01","H02","H03","H04","H05","H06b","H06c","H06e","H07"] },
+{"lesson_nom":"Info1Mi-1-A-L1", "duree":2, "profs":["GYM","TMZ"] ,"salles_possibles":["G01","G02","G03","G04","G05","G06a","G06b","G06d","G07","H01","H02","H03","H04","H05","H06b","H06c","H06e","H07"] }
+]}
+],
+
+
+"profs":[
+{"prof_nom":"AGP", "indisponible":["2_4","2_5","2_6","2_7","2_8","2_9"]},
+{"prof_nom":"CIM", "indisponible":[]}
+],
+
+"salles":[
+{"salle_nom":"G01", "capacity":40, "indisponible":[]},
+{"salle_nom":"G02", "capacity":32, "indisponible":[]},
+{"salle_nom":"G03", "capacity":28, "indisponible":[]},
+{"salle_nom":"G06a", "capacity":16, "indisponible":["3_0","3_1","3_2","3_3","3_4","3_5","3_6","3_7","3_8","3_9","3_10"]},
+{"salle_nom":"G06b", "capacity":20, "indisponible":["3_0","3_1","3_2","3_3","3_4","3_5","3_6","3_7","3_8","3_9","3_10"]}
+]
+}
+
+La librairie utilisée pour lire le fichier JSON est \textit{Jackson}. Elle permet de lire le fichier JSON et de le convertir en objet Java. L'objet Java est ensuite utilisé par l'application pour créer les différents objets nécessaires à la résolution du problème. Grâce à cette librairie, le mapping entre les données et les objets Java est automatique.
+
+\begin{verbatim}
+public static Problem parse(String filename){
+ObjectMapper mapper = new ObjectMapper();
+try {
+return mapper.readValue(new File(filename), Problem.class);
+} catch (Exception e) {
+throw new RuntimeException(e);
+}
+}
+\end{verbatim}
+
+La méthode \textit{parse} prend en paramètre le nom du fichier JSON à lire et retourne un objet de type \textit{Problem}. Si le fichier JSON n'est pas trouvé ou qu'il ne respecte pas le format attendu, une exception est levée.
+
+Il est possible de spécifier le fichier JSON à utiliser directement via l'application, ainsi que de modifier les données directement. Cela permet de tester rapidement différentes configurations. Le fichier spécifié est celui utilisé pour sauvegarder les données.
+
+\subsection{Contraintes}
+
+La génération de l'horaire est soumise à de multiples contraintes dont certaines sont plus importantes que d'autres. Les contraintes sont définies dans la classe \textit{Constraints}, ce qui permet de modifier facilement les contraintes à appliquer par le modèle.
+
+L'application met à disposition un ensemble de contraintes de base qui sont les suivantes :
+\begin{itemize}
+    \item \textbf{Contrainte de capacité} : la capacité de la salle doit être supérieure ou égale à la somme des effectifs des groupes participant au cours.
+    \item \textbf{Contrainte de disponibilité des professeurs} : un professeur ne peut pas donner deux cours en même temps.
+    \item \textbf{Contrainte de disponibilité des salles} : une salle ne peut pas être utilisée pour deux cours en même temps.
+    \item \textbf{Contrainte de disponibilité des groupes} : un groupe ne peut pas avoir deux cours en même temps.
+\end{itemize}
+
+Ces contraintes ne sont pas retirables et sont appliquées dès que le modèle est créé. Il est par contre possible d'ajouter des contraintes supplémentaires via l'interface graphique. Une liste de contraintes pré-définies est mise à disposition et il est possible de choisir lesquels nous intéresse via des "Checkbox". Par contre, il n'est pas possible de créer des contraintes personalisées.
+
+Plus de détails sur les contraintes ainsi que la résolution du problème sont disponibles dans la section \ref{sec:Modèle}.
+
+\subsection{Affichage}
+
+Une fois l'horaire généré, il va être possible de l'afficher directement dans l'application. L'affichage est réalisé grâce à la librairie \textit{JavaFX}. Dans l'itération actuelle de l'application, seulement une représentation texte est disponible, mais un affichage graphique est prévu pour une prochaine itération.
+
+Dans l'optique, il sera possible d'exporter l'horaire en tant qu'image ou en tant que fichier PDF. Cela permettra de partager l'horaire avec les étudiants et les professeurs.
