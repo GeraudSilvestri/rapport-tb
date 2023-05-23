@@ -5,13 +5,13 @@
 
 \usepackage[nooldvoltagedirection,european,americaninductors]{circuitikz}
 
-\signature{mbernasconi.svg} % Remplacer par votre propre signature vectorielle.
+%\signature{mbernasconi.svg} % Remplacer par votre propre signature vectorielle.
 
 \makenomenclature
 \makenoidxglossaries
 \makeindex
 
-\addbibresource{bibliography.bib}
+%\addbibresource{bibliography.bib}
 
 \input{nomenclature}
 \input{acronyms}
@@ -25,26 +25,25 @@
 \selectlanguage{french}
 \maketitle
 \frontmatter
-\clearemptydoublepage
 
 %% Requis par les dispositions générales des travaux de Bachelor
 \preamble
 \authentification
 
 %% Résumé / Résumé publiable / Version abrégée
-\begin{abstract}
-    \input{abstract}
-\end{abstract}
+%\begin{abstract}
+%    \input{abstract}
+%\end{abstract}
 
 %% Sommaire et tables
 \clearemptydoublepage
 {
     \tableofcontents
-    \let\cleardoublepage\clearpage
+    \let\cleardoublepage
     \listoffigures
-    \let\cleardoublepage\clearpage
+    \let\cleardoublepage
     \listoftables
-    \let\cleardoublepage\clearpage
+    \let\cleardoublepage
     \listoflistings
 }
 

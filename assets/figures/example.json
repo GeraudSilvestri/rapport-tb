@@ -1,0 +1,39 @@
+{
+    "problem_name": "test1",
+    "groupes": [
+        {
+            "groupe_nom": "MI1-1",
+            "effectif": 14,
+            "cours_suivis": [["CAO1-1-A","CAO1-1-B"],["Info1Mi-1-A"]]
+        }],
+    "cours": [
+        {
+            "cours_nom": "CAO1-1-A",
+            "lessons": [
+                {
+                    "lesson_nom": "CAO1-1-A-P1",
+                    "duree": 4,
+                    "profs": ["JCG"],
+                    "salles_possibles": ["H06c"]
+                }
+            ]
+        }
+    ],
+    "profs": [
+        {
+            "prof_nom": "AGP",
+            "indisponible": ["2_4","2_5","2_6","2_7","2_8","2_9"]
+        },
+        {
+            "prof_nom": "CIM",
+            "indisponible": []
+        }
+    ],
+    "salles": [
+        {
+            "salle_nom": "G06a",
+            "capacity": 16,
+            "indisponible": ["3_0", "3_1", "..."]
+        }
+    ]
+}
