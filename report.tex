@@ -6,7 +6,7 @@
 \usepackage[nooldvoltagedirection,european,americaninductors]{circuitikz}
 
 %\signature{mbernasconi.svg} % Remplacer par votre propre signature vectorielle.
-
+\let\cleardoublepage=\clearpage
 \makenomenclature
 \makenoidxglossaries
 \makeindex
@@ -34,19 +34,17 @@
 %\begin{abstract}
 %    \input{abstract}
 %\end{abstract}
-
 %% Sommaire et tables
 \clearemptydoublepage
 {
     \tableofcontents
-    \let\cleardoublepage
+    \let\cleardoublepage\clearpage
     \listoffigures
-    \let\cleardoublepage
+    \let\cleardoublepage\clearpage
     \listoftables
-    \let\cleardoublepage
+    \let\cleardoublepage\clearpage
     \listoflistings
 }
-
 \printnomenclature
 \clearemptydoublepage
 \pagenumbering{arabic}
@@ -63,9 +61,6 @@
 
 \chapter{Conception}
 \input {conception.tex}
-
-\chapter{Conclusion}
-\input{conclusion.tex}
 
 \chapter{Modèle}
 \input{modele.tex}

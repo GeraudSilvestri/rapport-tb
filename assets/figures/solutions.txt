@@ -1,0 +1,10 @@
+Gurobi STATUS is = 2 number of solutions 2
+objective value = 80.0
+Solution var sch_0_CAO1_H06c value 1.0
+Solution var sch_0_ENG_H05 value 1.0
+Solution var sch_0_Info2_G03 value 1.0
+Solution var sch_0_Phys1_G04 value 1.0
+Solution var sch_10_CAO2_H06c value 1.0
+Solution var sch_10_Phys2_G05 value 1.0
+Solution var sch_20_Info3_H07 value 1.0
+Solution var sch_40_Info1_G04 value 1.0

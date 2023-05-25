@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{heig-tb}[2020/06/23 HEIG-VD Bachelor Thesis]
 
-\LoadClass[11pt,a4paper,twoside,final]{book}
+\LoadClass[11pt,a4paper,oneside,final]{book}
 
 \def\builddir{build}
 \def\graphicsExt{pdf}

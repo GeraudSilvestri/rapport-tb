@@ -7,7 +7,7 @@ Le format de données attendu par l'application est un fichier JSON contenant re
 
 \begin{listing}[H]
     \inputminted{json}{assets/figures/example.json}
-    \caption{Yolo}
+    \caption{Exemple de fichier JSON}
 \end{listing}
 
 
@@ -15,7 +15,7 @@ La librairie utilisée pour lire le fichier JSON est \textit{Jackson}. Elle perm
 
 \begin{listing}[H]
     \inputminted{java}{assets/figures/parser.java}
-    \caption{Yolo2}
+    \caption{Parser JSON}
 \end{listing}
 
 La méthode \textit{parse} prend en paramètre le nom du fichier JSON à lire et retourne un objet de type \textit{Problem}. Si le fichier JSON n'est pas trouvé ou qu'il ne respecte pas le format attendu, une exception est levée.
