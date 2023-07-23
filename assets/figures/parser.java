@@ -1,4 +1,4 @@
-public static Problem parse(String filename){
+public static Problem parseProblem(String filename){
     ObjectMapper mapper = new ObjectMapper();
     try {
         return mapper.readValue(new File(filename), Problem.class);
