@@ -1,8 +1,9 @@
 \section{Modèle}
-Le programme va être séparé en 3 modèles différents. Actuellement, seul le premier est implémenté et fonctionnel. C'est celui qui est utilisé comme base pour les autres modèles et donc celui qui sera expliqué le plus en détails.
+Le programme va être séparé en 3 modèles différents. Chaque modèle va implémenter celui de base et y ajouter des fonctionnalités supplémentaires. Le 1er est très standarad et implémente que le strict nécessaire. Le 2 et 3ème modèle reprennent celui là et chacun ajoute une fonctionnalité supplémentaire.
 
 \subsection{Modèle standard}
 Ce modèle est le plus simple. Il pose les fondations pour les autres modèles et n'implémente donc que les fonctionnalités absolument nécessaires. Les différents paramètres du modèle sont les suivants :
+
 \begin{itemize}
 \item Une liste de professeurs ainsi que leurs disponibilités
 \item Une liste de salles composée de leur disponibilité ainsi que leur capacité
@@ -30,6 +31,8 @@ Dans le cadre de la génération d'un horaire, la fonction objective va uniqueme
 
 Cela va assigner une valeur à chaque période, le plus tôt dans la journée, la plus grande la valeur. Le 10 correspond au nombre de période dans une journée. Étant donné que l'on multiplie par 10-$p$, $p$ étant l'index de la période, plus l'on avance dans la journée, plus $p$ sera grand ce qui fait que la valeur de la période diminue.
 
+Deux autres variations de cette fonction objective ont été ajoutée. La première va juste inverser la pondération des périodes ce qui va naturellement favoriser les périodes de fin de journée. La seconde va favoriser les périodes du milieu. La formule mathématique est un tout petit peu plus complexe, mais le principe reste le même. Le but est de mettre le poids le plus fort aux périodes du milieu de la journée. J'ai donc combiné les deux premières fonctions objectives pour arriver au résultat voulu.
+
 \subsubsection{Contraintes}
 
 Grâce aux contraintes suivantes, nous pouvons assurer que l'horaire généré soit valide. La validité d'un horaire est établie par le fait qu'il n'y ai pas plusieurs leçons en même temps dans une salle ou qu'un professeur ne doive pas donner 2 cours en même temps.
@@ -39,9 +42,8 @@ Grâce aux contraintes suivantes, nous pouvons assurer que l'horaire généré s
 \begin{align}
 \sum_{p=1}^{nP} \sum_{s=1}^{nS} sch_{psl} & = 1 \\
 \sum_{j=1}^{5} \sum_{11 - d[i]}^{11} \sum_{s=1}^{nS} sch_{psl} & \leq 0 \\
-sch_{psl} & \leq 0 \\
 \sum_{s=1}^{nS} \sum_{p=1}^{nP} \sum_{l=1}^{nL} \sum_{W=0}^{d[i]-1} sch_{psl} & \leq 1 \\
-\sum_{e=1}^{nE} \sum_{p=1}^{nP} \sum_{l=1}^{nLE} \sum_{W=0}^{d[i]-1} sch_{psl} & \leq 1
+\sum_{e=1}^{nE} \sum_{p=1}^{nP} \sum_{l=1}^{nLE} \sum_{W=0}^{d[i]-1} sch_{psl} & \leq 1 \\
 \end{align}
 Où $l$ va de 1 au nombre de leçons, $np$ représente le nombre de périodes en une semaine, $nS$ le nombre de salles, $nE$ le nombre d'enseignants et $nL$ le nombre de leçons.
 \end{subequations}
@@ -52,16 +54,54 @@ Où $l$ va de 1 au nombre de leçons, $np$ représente le nombre de périodes en
 \\ \\
 (2) Cette contrainte est là pour s'assurer qu'une leçon est assignée en fin de journée et qu'elle n'a pas le temps de se terminer. Ceci est fait en vérifiant pour un période donnée que si la période + la durée du cours ne soit pas en dehors des périodes d'une journée.
 \\ \\
-(3) Celle-ci fait en sorte que chaque leçon est planifiée dans une des salles possibles. Dans l'équation, il manque la condition "si la salle ne fait pas partie des salles possibles pour le cours", ainsi, si la condition ne passe pas, la valeur maximum pour ce cours et cette salle dans $sch$ est mise au maximum à 0.
+(3) Cette contrainte un peu indigeste est là pour faire qu'il n'y a qu'une seule leçon par salle salles à une période donnée. Elle regarde pour chaque salle, période et leçon que la somme de toutes les leçons à ce moment-là soit à 1. De plus, elles prennent en compte la durée des leçons et vérifient qu'une leçon n'avait pas déjà commencé précédemment.
 \\ \\
-(4) Cette contrainte un peu indigeste est là pour faire qu'il n'y a qu'une seule leçon par salle salles à une période donnée. Elle regarde pour chaque salle, période et leçon que la somme de toutes les leçons à ce moment-là soit à 1. De plus, elles prennent en compte la durée des leçons et vérifient qu'une leçon n'avait pas déjà commencé précédemment.
+(4) Cette contrainte a le même principe que la précédente. Elle vérifie qu'un professeur n'a pas 2 cours au même moment. La seule différence sur le concept, c'est l'intégration de la variable $nLE$ qui correspond à tout les cours que le professeur donne.
+
+\subsection{Gestion des groupes}
+
+Au niveau de la gestion des groupes. De nouvelles variables et contraintes ont été ajoutées afin de faciliter, voir de rendre possible la gestion des groupes. Les 2 variables sont des maps de <String, GRBVar> qui vont contenir les variables de chaque groupe. La première variable est une variable binaire qui va valoir 1 si le groupe G suit le cours C et 0 sinon. La seconde variable, quant à elle, va valloir 1 si le groupe G suis la leçon C à la période P et 0 sinon.
+
+\begin{equation*}
+    g_{gc} =
+    \begin{cases}
+    1 & \text{si le groupe $g$ suit le cours $c$} \\
+    0 & \text{sinon}
+    \end{cases}
+    g = 1 .. nG \quad c = 1 .. nGC
+\end{equation*}
+
+\begin{equation*}
+    gVars_{pgl} =
+    \begin{cases}
+    1 & \text{si le groupe $g$ suit la leçon $l$ à la période $p$} \\
+    0 & \text{sinon}
+    \end{cases}
+    g = 1 .. nG \quad l = 1 .. nLC \quad p = 1 .. nP
+\end{equation*}
+
+En plus de ces 2 variables, 3 nouvelles contraintes ont été ajoutées. La première va faire qu'un groupe va forcément suivre un des cours parmi les choix à disposition. La seconde va faire que lorsqu'un groupe suit un cours, il va suivre toutes les leçons de ce cours. La dernière va faire le lien entre les leçons d'un groupe et les leçons planifiées. Au niveau mathématique cela se traduit comme suit:
+
+\begin{subequations}
+    \renewcommand{\theequation}{\arabic{equation}}
+    \begin{align}
+    \sum_{g=1}^{nG} \sum_{c=1}^{nGC} g_{gc} & = 1 \\
+    \sum_{g=1}^{nG} \sum_{c=1}^{nGC} \sum_{l=1}^{nLC} (\sum_{p=1}^{nP} gVars_{plg} - g_{gc})   & \leq 0\\
+    \sum_{g=1}^{nG} \sum_{l=1}^{nLC} \sum_{p=1}^{nP} (gVars_{plg} - \sum_{s=1}^{nS} sch_{psl}) & \leq 0
+    \end{align}
+    Où $nP$ représente le nombre de périodes en une semaine, $nS$ le nombre de salles, $nLC$ le nombre de leçons d'un cours, $nG$ le nombre de groupes et $nGC$ le nombre de cours d'un groupe.
+\end{subequations}
+\\
+\\
+\textbf{Explications:}\\
+(1) On s'assure qu'un groupe suit exactement un cours parmi les choix à disposition.
 \\ \\
-(5) Cette contrainte a le même principe que la précédente. Elle vérifie qu'un professeur n'a pas 2 cours au même moment. La seule différence sur le concept, c'est l'intégration de la variable $nLE$ qui correspond à tout les cours que le professeur donne.
+(2) Dans cette contrainte, on s'assure que si un groupe suit un cours, il suit toutes les leçons de ce cours. Pour cela, on prend pour chaque groupe, chaque cours et chaque leçons du cours. Pour chaque leçons suivies d'un groupe, on fait +1 et pour chaque leçons planifiées dans \textit{gVars}, on fait -1. Ainsi, cela nous assure que toute les leçons suivies sont planifiées.
+\\ \\
+(3) Après la contrainte précédente, le modèle nous assure qu'un groupe suis un cours et toutes les leçons assignées au cours. Il ne reste plus qu'à faire que les cours suivis soient ajoutés dans l'horaire avec une salle assignée. C'est ce que fait cette contrainte. Elle fait le lien entre \textit{gVars} et \textit{sch}. En faisant +1 pour chaque variable dans \textit{gVars} et -1 pour chaque variable dans \textit{sch}, on s'assure que les cours suivis sont bien planifiés et qu'ils ont une salle assignée.
 
 \subsection{Limitations}
 Le modèle actuel est très simple et a donc beaucoup de limitations qui seront détaillées ci-dessous. Comme dit précédemment, ce modèle n'est qu'une base pour la suite du projet. Les modèles suivants vont itérer sur celui-ci afin de résoudre les limitations qui seront mentionnées.
-
-La première limitation est que le modèle ne prend pas en compte les disponibilités des professeurs. En effet, il est courant qu'un professeur ne soit pas disponible une certaine journée de la semaine, parce qu'il donne un cours à une autre école par exemple. Un autre problème est le fait que les salles ont une capacité limitée, et ne peuvent donc pas accueillir un nombre illimité d'étudiants. La première itération du modèle visera à résoudre ces problèmes.
 
 Une fois le 2e modèle terminé, le problème restant à être réglé est ce que je vais appeler les $options$. Prenons un cours $Info$ qui est suivit par 2 classes différentes. Au niveau du JSON, il est possible de spécifier que la leçon est composée de plusieurs cours et que chaque groupe inscrit à la leçon doit suivre un de ces cours. Mais actuellement, il est certes possible de spécifier les $options$, mais elle ne sont pas prises en compte lors de l'optimisation de l'horaire. Le but final de cette itération est de non seulement prendre les $options$ en compte, mais aussi de pouvoir générer un horaire pour 2 groupes différents.
 
@@ -93,10 +133,34 @@ Ensuite, on remarque que tout les cours ont été planifié sans superposition, 
 
 Ici, on peut remarquer une des limitations du modèle, les cours sont planifiés sur des journées différentes afin de maximiser la valeur objective, mais on ne différencie pas entre les journées. C'est pour cela que les cours "Info1" et "Info3" sont planifiés le mercredi et vendredi, alors que rien n'empêche qu'ils soient planifiés mardi et mercredi.
 
-Le résultat obtenu ressemblerait à ceci si on le représentait sous forme de grille :
+\subsection{Modèle 2}
+Le 2ème modèle est basé sur le premier, ainsi toutes les contraintes décrites précédemment sont toujours présentes. Le but de ce modèle est de prendre en compte les $options$ et de pouvoir générer un horaire pour 2 groupes différents. Ceci est relativement simple, il suffit de rajouter ées 2 contraintes suivantes :
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=1\textwidth]{./assets/figures/schedule.png}
-\caption{Exemple d'horaire obtenu}
-\end{figure}
+\begin{subequations}
+    \renewcommand{\theequation}{\arabic{equation}}
+    \begin{align}
+    \sum_{g=1}^{nG} \sum_{c=1}^{nGC} \sum_{l=1}^{nLC} \sum_{p=1}^{nP} gVars_{plg} & \leq 1 \\
+    \sum_{p=1}^{nP} \sum_{l=1}^{nL} \sum_{s=1}^{nS} (sch_{psl} + \sum_{g=1}^{nG} gVars_{plg}) = 2
+    \end{align}
+    Où $nP$ représente le nombre de périodes en une semaine, $nS$ le nombre de salles, $nLC$ le nombre de leçons d'un cours, $nG$ le nombre de groupes et $nGC$ le nombre de cours d'un groupe.
+\end{subequations}
+\\
+\\
+\textbf{Explications:}\\
+(1) On s'assure que chaque leçons est planifiée exactement qu'une fois
+\\ \\
+(2) Cette contrainte est là pour garantir qu'il n'y ai pas 2 groupes ayant un cours au même moment dans la même salle. En faisant la somme de \textit{sch} et de \textit{gVars}, on obtient le nombre de cours planifiés à la période \textit{p} dans la salle \textit{s}. Si ce nombre est supérieur à 2, alors la contrainte n'est pas respectée. Si elle est inférieur à 2, cela veut dire que soit un cours est planifié dans une salle sans qu'un groupe y soit inscrit, soit qu'un groupe a un cours dans une salle sans qu'un cours y soit planifié. Dans les 2 cas, la contrainte n'est pas respectée.
+
+\subsection{Modèle 3}
+Le 3ème modèle reprend le 2ème en y rajoutant une contrainte pour éviter qu'il y ai un cours avec trop d'élèves planifiés dans une salle trop petite. Cette contrainte est la suivante :
+\begin{subequations}
+    \renewcommand{\theequation}{\arabic{equation}}
+    \begin{align}
+    \sum_{s=1}^{nS} \sum_{p=1}^{nP} \sum_{l=1}^{nL} ((\sum_{g=1}^{nG} cG * gVars_{plg}) + (10000 - cR * sch{psl})) & \leq 10000
+    \end{align}
+    Où $nP$ représente le nombre de périodes en une semaine, $nS$ le nombre de salles, $nG$ le nombre de groupes, ainsi que $cG$ et $cR$ qui sont des constantes représentant respectivement le nombre d'élèves dans un groupe et le nombre de places dans une salle.
+\end{subequations}
+\\
+\\
+\textbf{Explications:}\\
+Cette contrainte est un peu incompréhensible, mais elle est là pour garantir que le nombre d'élèves dans une salle ne dépasse pas le nombre de places dans celle-ci. La première chose que l'on remarque, c'est que l'on additione une constante, 10'000 dans notre cas. Cette constante est là pour faire en sorte que si un cours n'a pas lieu au moment que l'on vérifie, la contrainte sera respectée dans tous les cas. Dans le cas contraire, cela veut dire que \textit{sch} vaut 1, la constante à gauche annule donc cette de droite. Ensuite, on additione le nombre d'élèves de chaque groupe ayant ce cours, en soustrayant la capacité de la salle. Si c'est négatif, cela veut dire que la contrainte est respectée, cela veut dire que la capacité est plus grande que le nombre d'élève et que la contrainte est donc respectée.
