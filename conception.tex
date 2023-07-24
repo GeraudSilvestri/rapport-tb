@@ -30,13 +30,13 @@ L'application permet de spécifier le fichier JSON à lire via l'interface graph
     \caption{Exemple de la fenêtre de données}
 \end{figure}
 
-Ci-dessus, un exemple de la fenêtre de données. Les 2 boutons permettent de spécifier si ce que l'on veut lire est un problème ou une solution. Afin de faciliter l'utilisation, un fichier d'exemple est fourni avec l'application et est selectionné par défaut.
+Ci-dessus, un exemple de la fenêtre de données. Les 2 boutons permettent de spécifier si ce que l'on veut lire est un problème ou une solution. Afin de faciliter l'utilisation, un fichier d'exemple est fourni avec l'application et est sélectionné par défaut.
 
-Pour permettre l'affichage de liste d'objets dans les tableaux, il a été nécessaire de créer un type sur mesure représentant une cellule et affichant les listes d'une manière spécifique. Cela permet d'afficher les listes de manière  lisible et plus compacte, en plus de faciliter la mise en place d'un système gérant les interactions avec les cellues, tel que cliquer dessus pour modifier la valeur.
+Pour permettre l'affichage de liste d'objets dans les tableaux, il a été nécessaire de créer un type sur mesure représentant une cellule et affichant les listes d'une manière spécifique. Cela permet d'afficher les listes de manière lisible et plus compacte, en plus de faciliter la mise en place d'un système gérant les interactions avec les cellules, tel que cliquer dessus pour modifier la valeur.
 
 \subsection{Contraintes}
 
-La génération de l'horaire est soumise à de multiples contraintes dont certaines sont plus importantes que d'autres. Les contraintes par défaut sont appliquées dès que le modèle est créé. Il est possible d'ajouter des contraintes supplémentaires via l'interface graphique. Une liste de contraintes pré-définies est mise à disposition et il est possible de choisir lesquels nous intéresse via des "Checkbox". Par contre, il n'est pas possible de créer des contraintes personalisées.
+La génération de l'horaire est soumise à de multiples contraintes dont certaines sont plus importantes que d'autres. Les contraintes par défaut sont appliquées dès que le modèle est créé. Il est possible d'ajouter des contraintes supplémentaires via l'interface graphique. Une liste de contraintes pré-définies est mise à disposition et il est possible de choisir lesquels nous intéresse via des "Checkbox". Par contre, il n'est pas possible de créer des contraintes personnalisées.
 
 \begin{figure}[H]
     \centering
@@ -51,17 +51,17 @@ L'application met à disposition un ensemble de contraintes de base qui sont les
     \item \textbf{Contrainte de disponibilité des professeurs} : un professeur ne peut pas donner deux cours en même temps.
     \item \textbf{Contrainte de disponibilité des salles} : une salle ne peut pas être utilisée pour deux cours en même temps.
     \item \textbf{Contrainte des cours suivis} : chaque groupe doit suivre tous les cours lui étant assigné.
-    \item \textbf{Contrainte des leçons suivies} : chaque leçons composant un cours doivent être suivies par le groupe suivant le cours.
-    \item \textbf{Contrainte des cours optionels (optionel)} : chaque groupe doit suivre exactement 1 cours parmis les cours parallèles d'une matière.
-    \item \textbf{Contrainte de la capacité des salles {optionel}} : la capacité d'une salle doit être suffisante pour accueillir le ou les groupes suivant le cours.
+    \item \textbf{Contrainte des leçons suivies} : chaque leçon composant un cours doit être suivi par le groupe suivant le cours.
+    \item \textbf{Contrainte des cours optionnels (optionnel)} : chaque groupe doit suivre exactement 1 cours parmi les cours parallèles d'une matière.
+    \item \textbf{Contrainte de la capacité des salles {optionnel}} : la capacité d'une salle doit être suffisante pour accueillir le ou les groupes suivant le cours.
 \end{itemize}
 \vspace{\baselineskip}
 
-La contrainte des cours suivis est une contrainte par défaut, mais la contrainte des cours optionels viens se rajouter par dessus si elle est selectionée. La première va faire en sorte que chaque groupe suis tout les cours qui lui sont assignés. Mais dans les donnés du problème, il est possible de spécifier des cours optionels. Dans le cas où la contrainte des cours optionels n'est pas activée, le premier cours sera pris par défaut. Dans le cas contraire, le modèle va trouver la solution optimale en assignant à chaque groupe un cours optionel. De plus, le fait de l'ajouter va rajouter une contrainte supplémentaire qui va nous assurer que lorsqu'un groupe est assigné à un cours, toute les leçons le composant sont également assignées.
+La contrainte des cours suivis est une contrainte par défaut, mais la contrainte des cours optionnels vient se rajouter par-dessus si elle est sélectionnée. La première va faire en sorte que chaque groupe suis tout les cours qui lui sont assignés. Mais dans les données du problème, il est possible de spécifier des cours optionnels. Dans le cas où la contrainte des cours optionnels ne serait pas activée, le premier cours sera pris par défaut. Dans le cas contraire, le modèle va trouver la solution optimale en assignant à chaque groupe un cours optionnel. De plus, le fait de l'ajouter va rajouter une contrainte supplémentaire qui va nous assurer que lorsqu'un groupe est assigné à un cours, toute les leçons le composant sont également assignées.
 
-L'autre contrainte optionel (capacité des salles), est relativement simple. Elle va vérifier que la salle est assez grande pour accueillir le ou les groupes suivant le cours. Si ce n'est pas le cas, la contrainte n'est pas respectée et le modèle sera forcé de trouver une autre salle pour ce cours.
+L'autre contrainte optionnel (capacité des salles), est relativement simple. Elle va vérifier que la salle est assez grande pour accueillir le ou les groupes suivant le cours. Si ce n'est pas le cas, la contrainte n'est pas respectée et le modèle sera forcé de trouver une autre salle pour ce cours.
 
-Il se peut que le modèle ne trouve pas de solution respectant les contraintes données ou qu'il n'y ai pas de solutions du tout. Le cas échéant, un fichier \textit{model.ilp} sera automatiquement généré. Contenu dedans seront toutes les contraintes posant problème. Ce qui permet de rapidement trouver quels points ont empêchés de trouver une solution viable.
+Il se peut que le modèle ne trouve pas de solution respectant les contraintes données ou qu'il n'y a pas de solutions du tout. Le cas échéant, un fichier \textit{model.ilp} sera automatiquement généré. Contenu dedans seront toutes les contraintes posant problème. Ce qui permet de rapidement trouver quels points ont empêchés de trouver une solution viable.
 
 Les détails sur l'implémentation mathématique et informatique de ces contraintes sont disponibles dans la section \textit{Modèle}.
 
